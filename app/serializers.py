@@ -17,7 +17,18 @@ class ClientSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password']
+        fields = ['id', 'username', 'password', 'is_superuser', 'is_staff']
+    
+    def create(self, validated_data):
+        user = User(
+            # email=validated_data['email'],
+            username=validated_data['username'],
+            is_superuser=validated_data['is_superuser'],
+            is_staff=validated_data['is_staff'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 class WarehouseSerializer(ModelSerializer):
     # user = UserSerializer()

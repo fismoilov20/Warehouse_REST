@@ -9,7 +9,7 @@ from rest_framework.views import APIView, Response, status
 # Create your views here.
 
 class ProductsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         products = Product.objects.filter(warehouse__user=request.user)
@@ -36,7 +36,7 @@ class ProductsAPIView(APIView):
             ser = ProductSerializer(product, data=request.data)
             if ser.is_valid():
                 ser.save()
-                return Response({"updated_data": ser.data})
+                return Response({"updated_data": ser.data}, status=status.HTTP_202_ACCEPTED)
             return Response({"details": ser.errors}, status=status.HTTP_406_NOT_ACCEPTABLE)
         return Response({"error_message": "You don't have permissions!"}, status=status.HTTP_403_FORBIDDEN)
     

@@ -12,7 +12,7 @@ class TestClientSerializer(TestCase):
             "phone": "+998951357846",
             "address": "Fergana, Alisher Navoi",
             "debt": 0,
-            "warehouse": Warehouse.objects.get(id=1),
+            "warehouse": Warehouse.objects.get(id=2),
         }
         return super().setUp()
     
@@ -20,7 +20,7 @@ class TestClientSerializer(TestCase):
         ser = ClientSerializer(self.data)
         assert ser.data["id"] == 5
         assert ser.data["shop_name"] == "Coca-Cola"
-        assert ser.data["warehouse"] == 1
+        assert ser.data["warehouse"] == 2
         
     def test_validate_debt_valid(self):
         client = {
@@ -30,7 +30,7 @@ class TestClientSerializer(TestCase):
             "phone": "+998951357846",
             "address": "Fergana, Alisher Navoi",
             "debt": 0,
-            "warehouse": 1,
+            "warehouse": 2,
         }
         ser = ClientSerializer(data=client)
         assert ser.is_valid() == True
@@ -43,9 +43,10 @@ class TestClientSerializer(TestCase):
             "phone": "+998951357846",
             "address": "Fergana, Alisher Navoi",
             "debt": 700000,
-            "warehouse": 1,
+            "warehouse": 2,
         }
         ser = ClientSerializer(data=client)
         assert ser.is_valid() == False
+        
         print(ser.errors['debt'])
         assert ser.errors['debt'][0] == 'A client cannot have such high debts!'
